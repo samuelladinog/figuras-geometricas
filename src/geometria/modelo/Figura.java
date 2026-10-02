@@ -1,7 +1,7 @@
 package geometria.modelo;
 
 /**
- * AbstracciÃ³n de cualquier figura geomÃ©trica. (x, y) es el centro de la figura y
+ * Abstracción de cualquier figura geométrica. (x, y) es el centro de la figura y
  * escala es el factor acumulado aplicado a sus dimensiones (inicia en 1).
  * Para agregar una figura nueva basta con extender esta clase (principio abierto/cerrado).
  */
@@ -29,11 +29,11 @@ public abstract class Figura {
     }
 
     public void escalar(double factor) {
-        escala *= factor;
+        escala *= validarPositivo(factor, "factor de escala");
     }
 
     /**
-     * Compara esta figura con otra del mismo tipo segÃºn el valor de dimensionar().
+     * Compara esta figura con otra del mismo tipo según el valor de dimensionar().
      *
      * @return negativo si esta figura es menor, 0 si son iguales, positivo si es mayor
      * @throws IllegalArgumentException si las figuras no son del mismo tipo
@@ -45,12 +45,12 @@ public abstract class Figura {
         return Double.compare(dimensionar(), otra.dimensionar());
     }
 
-    /** Tipo de la figura. Las subclases pueden especializarlo (p. ej. el triÃ¡ngulo). */
+    /** Tipo de la figura. Las subclases pueden especializarlo (p. ej. el triángulo). */
     public String obtenerTipo() {
         return getClass().getSimpleName();
     }
 
-    /** Coordenadas del centro de la figura (asociaciÃ³n "coordenadas" con Punto). */
+    /** Coordenadas del centro de la figura (asociación "coordenadas" con Punto). */
     public Punto getCoordenadas() {
         return new Punto(x, y);
     }
@@ -73,5 +73,14 @@ public abstract class Figura {
 
     public double getEscala() {
         return escala;
+    }
+
+    /** Regla del enunciado: ninguna dimensión puede ser menor o igual a cero. */
+    protected static double validarPositivo(double valor, String nombreDimension) {
+        if (!(valor > 0) || Double.isInfinite(valor)) {
+            throw new IllegalArgumentException(
+                    "El valor de '" + nombreDimension + "' debe ser mayor que cero (recibido: " + valor + ")");
+        }
+        return valor;
     }
 }
