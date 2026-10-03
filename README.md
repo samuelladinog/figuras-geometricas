@@ -18,7 +18,7 @@ interfaz gráfica diseñada con el **GUI Designer de IntelliJ** (arrastrando com
    (es el valor por defecto; así **no se genera código** en los .java).
 4. Ejecutar:
    - `src/geometria/Main.java` → pruebas de funcionamiento por consola.
-   - `src/geometria/MainInterfaz.java` → interfaz gráfica.
+   - `src/geometria/vista/MainInterfaz.java` → interfaz gráfica.
 5. Para ver o editar la interfaz: abrir `src/geometria/vista/VentanaPrincipal.form`
    (se abre en el diseñador visual).
 
@@ -35,7 +35,6 @@ interfaz gráfica diseñada con el **GUI Designer de IntelliJ** (arrastrando com
 ```
 src/geometria
 ├── Main.java                      Pruebas por consola (Parte 3)
-├── MainInterfaz.java              Abre la ventana
 ├── modelo
 │   ├── Figura.java                <<abstract>> x, y, escala + desplazar, escalar, compararArea
 │   ├── Punto.java                 Coordenadas (distancia, trasladar, rotar, escalar, puntoMedio)
@@ -43,6 +42,7 @@ src/geometria
 ├── presentacion
 │   └── InformacionFigura.java     Información de cualquier figura (toString / toStringHTML)
 └── vista
+    ├── MainInterfaz.java          Abre la ventana
     ├── VentanaPrincipal.form      Diseño visual (GUI Designer)
     ├── VentanaPrincipal.java      Eventos de los botones
     └── TipoFigura.java            Figuras que se pueden crear desde la ventana
