@@ -1,28 +1,27 @@
 package geometria.vista;
 
 import geometria.modelo.Figura;
-import geometria.modelo.figuras.Circulo;
-import geometria.modelo.figuras.Cuadrilatero;
-import geometria.modelo.figuras.Pentagono;
-import geometria.modelo.figuras.Triangulo;
 import geometria.presentacion.InformacionFigura;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
+import java.awt.Component;
 import java.util.List;
+import java.util.Locale;
 
 /**
- * Ventana principal. Los componentes se diseñan visualmente (arrastrando y soltando)
- * en VentanaPrincipal.form con el GUI Designer de IntelliJ.
+ * Lógica de la ventana principal. Los componentes se diseñan visualmente
+ * (arrastrando y soltando) en VentanaPrincipal.form con el GUI Designer de IntelliJ;
+ * aquí solo se programan los eventos.
  */
 public class VentanaPrincipal {
 
@@ -48,355 +47,152 @@ public class VentanaPrincipal {
     private JButton botonEliminar;
     private JEditorPane panelInformacion;
 
-    private final DefaultListModel<Figura> modeloLista =
-            new DefaultListModel<>();
+    private final DefaultListModel<Figura> modeloFiguras = new DefaultListModel<>();
+    private final JLabel[] etiquetasDimension;
+    private final JTextField[] camposDimension;
 
     public VentanaPrincipal() {
-
-        comboTipo.setModel(
-                new DefaultComboBoxModel<>(TipoFigura.values())
-        );
-
-        listaFiguras.setModel(modeloLista);
-        listaFiguras.setSelectionMode(
-                ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
-        );
-
-        actualizarEtiquetas();
-
-        comboTipo.addActionListener(e -> actualizarEtiquetas());
-
-        botonCrear.addActionListener(e -> crearFigura());
-
-        botonDesplazar.addActionListener(e -> desplazarFigura());
-
-        botonEscalar.addActionListener(e -> escalarFigura());
-
-        botonComparar.addActionListener(e -> compararFiguras());
-
-        botonMostrar.addActionListener(e -> mostrarFigura());
-
-        botonEliminar.addActionListener(e -> eliminarFigura());
-    }
-
-    private void actualizarEtiquetas() {
-
-        TipoFigura tipo = (TipoFigura) comboTipo.getSelectedItem();
-
-        if (tipo == null) {
-            return;
-        }
-
-        etiquetaDimension1.setVisible(true);
-        campoDimension1.setVisible(true);
-
-        etiquetaDimension2.setVisible(false);
-        campoDimension2.setVisible(false);
-
-        etiquetaDimension3.setVisible(false);
-        campoDimension3.setVisible(false);
-
-        switch (tipo) {
-
-            case CIRCULO:
-                etiquetaDimension1.setText("Radio:");
-                break;
-
-            case TRIANGULO:
-                etiquetaDimension1.setText("Lado 1:");
-                etiquetaDimension2.setText("Lado 2:");
-                etiquetaDimension3.setText("Lado 3:");
-
-                etiquetaDimension2.setVisible(true);
-                campoDimension2.setVisible(true);
-
-                etiquetaDimension3.setVisible(true);
-                campoDimension3.setVisible(true);
-                break;
-
-            case CUADRILATERO:
-                etiquetaDimension1.setText("Ancho:");
-                etiquetaDimension2.setText("Alto:");
-
-                etiquetaDimension2.setVisible(true);
-                campoDimension2.setVisible(true);
-                break;
-
-            case PENTAGONO:
-                etiquetaDimension1.setText("Lado:");
-                break;
-        }
-    }
-
-    private void crearFigura() {
-
-        try {
-
-            double x = Double.parseDouble(campoX.getText());
-            double y = Double.parseDouble(campoY.getText());
-
-            TipoFigura tipo =
-                    (TipoFigura) comboTipo.getSelectedItem();
-
-            Figura figura;
-
-            switch (tipo) {
-
-                case CIRCULO:
-                    figura = new Circulo(
-                            x,
-                            y,
-                            Double.parseDouble(
-                                    campoDimension1.getText()
-                            )
-                    );
-                    break;
-
-                case TRIANGULO:
-                    figura = new Triangulo(
-                            x,
-                            y,
-                            Double.parseDouble(
-                                    campoDimension1.getText()
-                            ),
-                            Double.parseDouble(
-                                    campoDimension2.getText()
-                            ),
-                            Double.parseDouble(
-                                    campoDimension3.getText()
-                            )
-                    );
-                    break;
-
-                case CUADRILATERO:
-                    figura = new Cuadrilatero(
-                            x,
-                            y,
-                            Double.parseDouble(
-                                    campoDimension1.getText()
-                            ),
-                            Double.parseDouble(
-                                    campoDimension2.getText()
-                            )
-                    );
-                    break;
-
-                case PENTAGONO:
-                    figura = new Pentagono(
-                            x,
-                            y,
-                            Double.parseDouble(
-                                    campoDimension1.getText()
-                            )
-                    );
-                    break;
-
-                default:
-                    throw new IllegalArgumentException(
-                            "Tipo de figura no válido"
-                    );
-            }
-
-            modeloLista.addElement(figura);
-
-            mostrarInformacion(figura);
-
-        } catch (NumberFormatException e) {
-
-            JOptionPane.showMessageDialog(
-                    panelPrincipal,
-                    "Ingrese valores numéricos válidos."
-            );
-
-        } catch (IllegalArgumentException e) {
-
-            JOptionPane.showMessageDialog(
-                    panelPrincipal,
-                    e.getMessage()
-            );
-        }
-    }
-
-    private void desplazarFigura() {
-
-        Figura figura = listaFiguras.getSelectedValue();
-
-        if (figura == null) {
-            JOptionPane.showMessageDialog(
-                    panelPrincipal,
-                    "Seleccione una figura."
-            );
-            return;
-        }
-
-        try {
-
-            double dx = Double.parseDouble(campoDx.getText());
-            double dy = Double.parseDouble(campoDy.getText());
-
-            figura.desplazar(dx, dy);
-
-            listaFiguras.repaint();
-
-            mostrarInformacion(figura);
-
-        } catch (NumberFormatException e) {
-
-            JOptionPane.showMessageDialog(
-                    panelPrincipal,
-                    "Ingrese valores numéricos válidos."
-            );
-        }
-    }
-
-    private void escalarFigura() {
-
-        Figura figura = listaFiguras.getSelectedValue();
-
-        if (figura == null) {
-            JOptionPane.showMessageDialog(
-                    panelPrincipal,
-                    "Seleccione una figura."
-            );
-            return;
-        }
-
-        try {
-
-            double factor =
-                    Double.parseDouble(campoFactor.getText());
-
-            figura.escalar(factor);
-
-            listaFiguras.repaint();
-
-            mostrarInformacion(figura);
-
-        } catch (NumberFormatException e) {
-
-            JOptionPane.showMessageDialog(
-                    panelPrincipal,
-                    "Ingrese un factor numérico válido."
-            );
-
-        } catch (IllegalArgumentException e) {
-
-            JOptionPane.showMessageDialog(
-                    panelPrincipal,
-                    e.getMessage()
-            );
-        }
-    }
-
-    private void compararFiguras() {
-
-        List<Figura> seleccionadas =
-                listaFiguras.getSelectedValuesList();
-
-        if (seleccionadas.size() != 2) {
-
-            JOptionPane.showMessageDialog(
-                    panelPrincipal,
-                    "Seleccione exactamente 2 figuras.\n"
-                            + "Use Ctrl + clic para seleccionar dos."
-            );
-
-            return;
-        }
-
-        try {
-
-            Figura figura1 = seleccionadas.get(0);
-            Figura figura2 = seleccionadas.get(1);
-
-            int resultado =
-                    figura1.compararArea(figura2);
-
-            String mensaje;
-
-            if (resultado > 0) {
-
-                mensaje = figura1.obtenerTipo()
-                        + " es mayor que "
-                        + figura2.obtenerTipo();
-
-            } else if (resultado < 0) {
-
-                mensaje = figura1.obtenerTipo()
-                        + " es menor que "
-                        + figura2.obtenerTipo();
-
-            } else {
-
-                mensaje = "Las figuras tienen la misma dimensión.";
-            }
-
-            panelInformacion.setContentType("text/html");
-
-            panelInformacion.setText(
-                    "<html><h2>Comparación</h2>"
-                            + mensaje
-                            + "</html>"
-            );
-
-        } catch (IllegalArgumentException e) {
-
-            JOptionPane.showMessageDialog(
-                    panelPrincipal,
-                    e.getMessage()
-            );
-        }
-    }
-
-    private void mostrarFigura() {
-
-        Figura figura = listaFiguras.getSelectedValue();
-
-        if (figura == null) {
-
-            JOptionPane.showMessageDialog(
-                    panelPrincipal,
-                    "Seleccione una figura."
-            );
-
-            return;
-        }
-
-        mostrarInformacion(figura);
-    }
-
-    private void eliminarFigura() {
-
-        Figura figura = listaFiguras.getSelectedValue();
-
-        if (figura == null) {
-
-            JOptionPane.showMessageDialog(
-                    panelPrincipal,
-                    "Seleccione una figura."
-            );
-
-            return;
-        }
-
-        modeloLista.removeElement(figura);
-
-        panelInformacion.setText("");
-    }
-
-    private void mostrarInformacion(Figura figura) {
-
-        InformacionFigura informacion =
-                new InformacionFigura(figura);
-
-        panelInformacion.setContentType("text/html");
-
-        panelInformacion.setText(
-                informacion.toStringHTML()
-        );
+        etiquetasDimension = new JLabel[]{etiquetaDimension1, etiquetaDimension2, etiquetaDimension3};
+        camposDimension = new JTextField[]{campoDimension1, campoDimension2, campoDimension3};
+
+        comboTipo.setModel(new DefaultComboBoxModel<>(TipoFigura.values()));
+        comboTipo.addActionListener(evento -> actualizarCamposDimension());
+        listaFiguras.setModel(modeloFiguras);
+        listaFiguras.setCellRenderer(new RenderizadorFigura());
+
+        botonCrear.addActionListener(evento -> ejecutar(this::crearFigura));
+        botonMostrar.addActionListener(evento -> ejecutar(this::mostrarInformacion));
+        botonDesplazar.addActionListener(evento -> ejecutar(this::desplazarSeleccionadas));
+        botonEscalar.addActionListener(evento -> ejecutar(this::escalarSeleccionadas));
+        botonComparar.addActionListener(evento -> ejecutar(this::compararSeleccionadas));
+        botonEliminar.addActionListener(evento -> ejecutar(this::eliminarSeleccionadas));
+
+        actualizarCamposDimension();
     }
 
     public JPanel getPanelPrincipal() {
         return panelPrincipal;
+    }
+
+    private void actualizarCamposDimension() {
+        String[] nombres = tipoSeleccionado().getNombresDimensiones();
+        for (int i = 0; i < camposDimension.length; i++) {
+            boolean usado = i < nombres.length;
+            etiquetasDimension[i].setVisible(usado);
+            camposDimension[i].setVisible(usado);
+            if (usado) {
+                etiquetasDimension[i].setText(nombres[i] + ":");
+            }
+        }
+        panelPrincipal.revalidate();
+    }
+
+    private void crearFigura() {
+        TipoFigura tipo = tipoSeleccionado();
+        String[] nombres = tipo.getNombresDimensiones();
+        double[] dimensiones = new double[nombres.length];
+        for (int i = 0; i < nombres.length; i++) {
+            dimensiones[i] = leerNumero(camposDimension[i], nombres[i]);
+        }
+        Figura figura = tipo.crear(leerNumero(campoX, "X"), leerNumero(campoY, "Y"), dimensiones);
+        modeloFiguras.addElement(figura);
+        listaFiguras.setSelectedIndex(modeloFiguras.size() - 1);
+        mostrarHtml("<p><b>Figura creada correctamente.</b></p>" + new InformacionFigura(figura).toStringHTML());
+    }
+
+    private void mostrarInformacion() {
+        StringBuilder html = new StringBuilder();
+        for (Figura figura : obtenerSeleccionadas()) {
+            html.append(new InformacionFigura(figura).toStringHTML());
+        }
+        mostrarHtml(html.toString());
+    }
+
+    private void desplazarSeleccionadas() {
+        double dx = leerNumero(campoDx, "Desplazar X");
+        double dy = leerNumero(campoDy, "Desplazar Y");
+        for (Figura figura : obtenerSeleccionadas()) {
+            figura.desplazar(dx, dy);
+        }
+        listaFiguras.repaint();
+        mostrarInformacion();
+    }
+
+    private void escalarSeleccionadas() {
+        double factor = leerNumero(campoFactor, "Factor de escala");
+        for (Figura figura : obtenerSeleccionadas()) {
+            figura.escalar(factor);
+        }
+        listaFiguras.repaint();
+        mostrarInformacion();
+    }
+
+    private void compararSeleccionadas() {
+        List<Figura> seleccionadas = obtenerSeleccionadas();
+        if (seleccionadas.size() != 2) {
+            throw new IllegalArgumentException("Seleccione exactamente dos figuras (Ctrl + clic) para comparar");
+        }
+        Figura primera = seleccionadas.get(0);
+        Figura segunda = seleccionadas.get(1);
+        int resultado = primera.compararArea(segunda);
+        String relacion = resultado > 0 ? "MAYOR que" : resultado < 0 ? "MENOR que" : "IGUAL a";
+        mostrarHtml(String.format(Locale.ROOT,
+                "<h3>Comparación</h3><p>%s (dimensionar %.2f) es <b>%s</b> %s (dimensionar %.2f)</p>",
+                primera.getClass().getSimpleName(), primera.dimensionar(), relacion,
+                segunda.getClass().getSimpleName(), segunda.dimensionar()));
+    }
+
+    private void eliminarSeleccionadas() {
+        for (Figura figura : obtenerSeleccionadas()) {
+            modeloFiguras.removeElement(figura);
+        }
+        mostrarHtml("<p>Figuras eliminadas.</p>");
+    }
+
+    private List<Figura> obtenerSeleccionadas() {
+        List<Figura> seleccionadas = listaFiguras.getSelectedValuesList();
+        if (seleccionadas.isEmpty()) {
+            throw new IllegalArgumentException("Seleccione al menos una figura de la lista");
+        }
+        return seleccionadas;
+    }
+
+    private TipoFigura tipoSeleccionado() {
+        return (TipoFigura) comboTipo.getSelectedItem();
+    }
+
+    private void mostrarHtml(String contenido) {
+        panelInformacion.setText("<html><body>" + contenido + "</body></html>");
+        panelInformacion.setCaretPosition(0);
+    }
+
+    private static double leerNumero(JTextField campo, String nombreCampo) {
+        try {
+            return Double.parseDouble(campo.getText().trim().replace(',', '.'));
+        } catch (NumberFormatException error) {
+            throw new IllegalArgumentException("El campo '" + nombreCampo + "' debe ser un número");
+        }
+    }
+
+    private void ejecutar(Runnable accion) {
+        try {
+            accion.run();
+        } catch (IllegalArgumentException error) {
+            JOptionPane.showMessageDialog(panelPrincipal, error.getMessage(), "Dato no válido",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    /** Muestra cada figura de la lista como "#n Nombre | área | dimensionar". */
+    private static class RenderizadorFigura extends DefaultListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList<?> lista, Object valor, int indice,
+                                                      boolean seleccionado, boolean conFoco) {
+            Figura figura = (Figura) valor;
+            String texto = String.format(Locale.ROOT, "#%d  %s  |  área %.2f  |  dimensionar %.2f",
+                    indice + 1, figura.getClass().getSimpleName(), figura.calcularArea(), figura.dimensionar());
+            return super.getListCellRendererComponent(lista, texto, indice, seleccionado, conFoco);
+        }
     }
 }
