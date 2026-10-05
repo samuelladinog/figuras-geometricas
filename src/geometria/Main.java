@@ -7,149 +7,77 @@ import geometria.modelo.figuras.Pentagono;
 import geometria.modelo.figuras.Triangulo;
 import geometria.presentacion.InformacionFigura;
 
+import java.util.Locale;
+
+/** Pruebas de funcionamiento por consola (Parte 3 del parcial). */
 public class Main {
 
     public static void main(String[] args) {
+        Circulo circulo = new Circulo(0, 0, 3);
+        Triangulo triangulo = new Triangulo(0, 0, 3, 4, 5);
+        Cuadrilatero cuadrilatero = new Cuadrilatero(3, 2, 4, 2);
+        Pentagono pentagono = new Pentagono(2, 2, 2);
+        Figura[] figuras = {circulo, triangulo, cuadrilatero, pentagono};
 
-        System.out.println("===== PRUEBAS DE FIGURAS GEOMETRICAS =====");
-
-        Figura circulo1 = new Circulo(0, 0, 5);
-        Figura circulo2 = new Circulo(10, 10, 3);
-
-        Figura triangulo1 = new Triangulo(2, 3, 4, 5, 6);
-        Figura triangulo2 = new Triangulo(5, 5, 4, 4, 4);
-
-        Figura cuadrilatero1 = new Cuadrilatero(1, 1, 4, 5);
-        Figura cuadrilatero2 = new Cuadrilatero(5, 5, 2, 3);
-
-        Figura pentagono1 = new Pentagono(3, 3, 4);
-        Figura pentagono2 = new Pentagono(8, 8, 2);
-
-        // =========================
-        // CALCULOS
-        // =========================
-        System.out.println("\n--- CALCULOS ---");
-
-        System.out.println("Circulo - Area: " + circulo1.calcularArea());
-        System.out.println("Circulo - Perimetro: " + circulo1.calcularPerimetro());
-
-        System.out.println("Triangulo - Area: " + triangulo1.calcularArea());
-        System.out.println("Triangulo - Perimetro: " + triangulo1.calcularPerimetro());
-
-        System.out.println("Cuadrilatero - Area: " + cuadrilatero1.calcularArea());
-        System.out.println("Cuadrilatero - Perimetro: " + cuadrilatero1.calcularPerimetro());
-
-        System.out.println("Pentagono - Area: " + pentagono1.calcularArea());
-        System.out.println("Pentagono - Perimetro: " + pentagono1.calcularPerimetro());
-
-        // =========================
-        // COMPARACIONES
-        // =========================
-        System.out.println("\n--- COMPARACIONES ---");
-
-        comparar(circulo1, circulo2);
-        comparar(triangulo1, triangulo2);
-        comparar(cuadrilatero1, cuadrilatero2);
-        comparar(pentagono1, pentagono2);
-
-        // =========================
-        // DESPLAZAMIENTO
-        // =========================
-        System.out.println("\n--- DESPLAZAMIENTO ---");
-
-        System.out.println("Antes: (" + circulo1.getX() + ", " + circulo1.getY() + ")");
-
-        circulo1.desplazar(5, 3);
-
-        System.out.println("Despues: (" + circulo1.getX() + ", " + circulo1.getY() + ")");
-
-        // =========================
-        // ESCALAMIENTO
-        // =========================
-        System.out.println("\n--- ESCALAMIENTO ---");
-
-        System.out.println("Escala inicial: " + circulo1.getEscala());
-
-        circulo1.escalar(2);
-
-        System.out.println("Escala despues: " + circulo1.getEscala());
-        System.out.println("Nueva area: " + circulo1.calcularArea());
-
-        // =========================
-        // INFORMACION
-        // =========================
-        System.out.println("\n--- INFORMACION DE LAS FIGURAS ---");
-
-        System.out.println(new InformacionFigura(circulo1));
-        System.out.println();
-
-        System.out.println(new InformacionFigura(triangulo1));
-        System.out.println();
-
-        System.out.println(new InformacionFigura(cuadrilatero1));
-        System.out.println();
-
-        System.out.println(new InformacionFigura(pentagono1));
-
-        // =========================
-        // 8 CASOS NO VALIDOS
-        // =========================
-        System.out.println("\n--- 8 CASOS NO VALIDOS ---");
-
-        probarError("Circulo con radio negativo",
-                () -> new Circulo(0, 0, -5));
-
-        probarError("Circulo con radio cero",
-                () -> new Circulo(0, 0, 0));
-
-        probarError("Triangulo con lado negativo",
-                () -> new Triangulo(0, 0, -1, 2, 3));
-
-        probarError("Triangulo con lado cero",
-                () -> new Triangulo(0, 0, 0, 2, 3));
-
-        probarError("Triangulo invalido",
-                () -> new Triangulo(0, 0, 1, 2, 10));
-
-        probarError("Cuadrilatero con ancho negativo",
-                () -> new Cuadrilatero(0, 0, -4, 5));
-
-        probarError("Pentagono con lado cero",
-                () -> new Pentagono(0, 0, 0));
-
-        probarError("Escala con valor cero",
-                () -> circulo1.escalar(0));
-
-        System.out.println("\n===== FIN DE PRUEBAS =====");
-    }
-
-    private static void comparar(Figura figura1, Figura figura2) {
-
-        int resultado = figura1.compararArea(figura2);
-
-        if (resultado > 0) {
-            System.out.println(
-                    figura1.obtenerTipo() + " es mayor que " + figura2.obtenerTipo()
-            );
-        } else if (resultado < 0) {
-            System.out.println(
-                    figura1.obtenerTipo() + " es menor que " + figura2.obtenerTipo()
-            );
-        } else {
-            System.out.println(
-                    figura1.obtenerTipo() + " y " + figura2.obtenerTipo()
-                            + " tienen la misma dimension"
-            );
+        imprimirTitulo("1. CREACION Y CALCULOS (area, perimetro, dimensionar)");
+        for (Figura figura : figuras) {
+            System.out.println(new InformacionFigura(figura));
+            System.out.println();
         }
+
+        imprimirTitulo("2. DESPLAZAMIENTO (+2 en X, -1 en Y)");
+        for (Figura figura : figuras) {
+            figura.desplazar(2, -1);
+            System.out.printf(Locale.ROOT, "%s -> centro (%.2f, %.2f), dimensionar %.2f%n",
+                    figura.getClass().getSimpleName(), figura.getX(), figura.getY(), figura.dimensionar());
+        }
+
+        imprimirTitulo("3. ESCALAMIENTO (factor 2)");
+        for (Figura figura : figuras) {
+            double areaAntes = figura.calcularArea();
+            figura.escalar(2);
+            System.out.printf(Locale.ROOT, "%s: area antes %.2f -> area despues %.2f (escala %.1f)%n",
+                    figura.getClass().getSimpleName(), areaAntes, figura.calcularArea(), figura.getEscala());
+        }
+
+        imprimirTitulo("4. COMPARACION ENTRE FIGURAS DEL MISMO TIPO");
+        imprimirComparacion(circulo, new Circulo(5, 5, 1));
+        imprimirComparacion(triangulo, new Triangulo(0, 0, 30, 40, 50));
+        imprimirComparacion(cuadrilatero, new Cuadrilatero(0, 0, 1, 1));
+        imprimirComparacion(pentagono, new Pentagono(-10, 0, 1));
+        System.out.println("Tipo de triangulo 3-4-5: " + triangulo.obtenerTipo());
+        System.out.println("Tipo de triangulo 2-2-2: " + new Triangulo(0, 0, 2, 2, 2).obtenerTipo());
+
+        imprimirTitulo("5. MANEJO DE DIMENSIONES NO VALIDAS");
+        probarCasoInvalido("Circulo con radio 0", () -> new Circulo(0, 0, 0));
+        probarCasoInvalido("setRadio negativo", () -> circulo.setRadio(-5));
+        probarCasoInvalido("Triangulo con lado negativo", () -> new Triangulo(0, 0, -1, 2, 2));
+        probarCasoInvalido("Triangulo imposible (1, 2, 10)", () -> new Triangulo(0, 0, 1, 2, 10));
+        probarCasoInvalido("Cuadrilatero con alto 0", () -> new Cuadrilatero(0, 0, 3, 0));
+        probarCasoInvalido("Pentagono con lado -4", () -> new Pentagono(0, 0, -4));
+        probarCasoInvalido("Escalar con factor 0", () -> pentagono.escalar(0));
+        probarCasoInvalido("Comparar Circulo con Triangulo", () -> circulo.compararArea(triangulo));
     }
 
-    private static void probarError(String nombre, Runnable prueba) {
+    private static void imprimirComparacion(Figura primera, Figura segunda) {
+        int resultado = primera.compararArea(segunda);
+        String relacion = resultado > 0 ? "MAYOR que" : resultado < 0 ? "MENOR que" : "IGUAL a";
+        System.out.printf(Locale.ROOT, "%s (%.2f) es %s %s (%.2f)%n",
+                primera.getClass().getSimpleName(), primera.dimensionar(), relacion,
+                segunda.getClass().getSimpleName(), segunda.dimensionar());
+    }
 
+    private static void probarCasoInvalido(String descripcion, Runnable caso) {
         try {
-            prueba.run();
-            System.out.println("ERROR: " + nombre + " no fue detectado");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Correcto - " + nombre + ": " + e.getMessage());
+            caso.run();
+            System.out.println("[FALLO] " + descripcion + ": no se detecto el error");
+        } catch (IllegalArgumentException error) {
+            System.out.println("[OK] " + descripcion + " -> " + error.getMessage());
         }
+    }
+
+    private static void imprimirTitulo(String titulo) {
+        System.out.println();
+        System.out.println("===== " + titulo + " =====");
     }
 }
